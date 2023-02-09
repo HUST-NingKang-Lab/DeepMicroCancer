@@ -1,6 +1,11 @@
 This repository contains a diagnosis model using transfer learning techniques for a broad-spectrum of cancer types. The model is built using Random Forest and Random Forest Transfer learning techniques.
 # Workflow
 The project is divided into four scripts, each with its own function in the overall workflow.
+## Requirements
+To install the required packages, run the following command:
+```
+pip install -r requirements.txt
+```
 
 ## Split Dataset 
 The `split_dataset.py` script is used to split the dataset into training and testing sets. The script takes the path to the features and labels files in csv format as input and generates the training and testing datasets.
