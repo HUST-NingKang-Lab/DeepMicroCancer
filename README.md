@@ -16,9 +16,15 @@ The `split_dataset.py` script is used to split the dataset into training and tes
 ### Usage:
 Split the tissue dataset and blood dataset into training and testing sets with a test size of 30% and 20% respectively.
 ```
-python split_dataset.py -x data/tissue_snm.csv -s 0.3 -y data/tissue_meta.csv -o data/tissue
-python split_dataset.py -x data/blood_snm.csv -s 0.2 -y data/blood_meta.csv -o data/blood
-
+python split_dataset.py -x data/tissue_snm.csv \
+  -s 0.3 \
+  -y data/tissue_meta.csv \
+  -o data/tissue
+  
+python split_dataset.py -x data/blood_snm.csv \
+  -s 0.2 \
+  -y data/blood_meta.csv \
+  -o data/blood
 ```
 ## Build Model
 The `build_model.py` script builds the Random Forest classifier model. The script takes the path to the training features and labels files in csv format as input and outputs a saved model. Saved model contains three files: `model.joblib` contains the model parameters, `features.txt` contains the features used to build the model, and `label_encoder.joblib` contains the label encoder used to encode the labels.
@@ -33,8 +39,13 @@ The `build_model.py` script builds the Random Forest classifier model. The scrip
 ### Usage:
 Build the Random Forest classifier model for the tissue and blood datasets.
 ```
-python build_model.py -x data/tissue/X_train.csv -y data/tissue/y_train.csv -o models/tissue_model
-python build_model.py -x data/blood/X_train.csv -y data/blood/y_train.csv -o models/blood_model
+python build_model.py -x data/tissue/X_train.csv \
+  -y data/tissue/y_train.csv \
+  -o models/tissue_model
+  
+python build_model.py -x data/blood/X_train.csv \
+  -y data/blood/y_train.csv \
+  -o models/blood_model
 ```
 ## Transfer Model
 The `transfer.py` script is used to transfer the model from one dataset to another. The script takes the path to the source model, source features and labels files, target features and labels files in csv format as input and outputs a saved model. The source model should be built using the `build_model.py` script.
@@ -50,7 +61,12 @@ The `transfer.py` script is used to transfer the model from one dataset to anoth
 ### Usage:
 Transfer the tissue model to the blood dataset.
 ```
-python transfer.py -s models/tissue_model -sf data/tissue/X_train.csv -sl data/tissue/y_train.csv -tf data/blood/X_train.csv -tl data/blood/y_train.csv -o models/tissue-blood_model
+python transfer.py -s models/tissue_model \
+  -sf data/tissue/X_train.csv \
+  -sl data/tissue/y_train.csv \
+  -tf data/blood/X_train.csv \
+  -tl data/blood/y_train.csv \
+  -o models/tissue-blood_model
 ```
 
 ## Predict
@@ -68,15 +84,29 @@ The `predict.py` script is used to predict the labels of the testing dataset. Th
 ### Usage
 Predict the labels of the testing dataset for the tissue using the tissue model.
 ```
-python predict.py -i data/tissue/X_test.csv -l data/tissue/y_test.csv -m models/tissue_model -t independent -f tissue-tissue -o results/tissue-tissue
+python predict.py -i data/tissue/X_test.csv \
+  -l data/tissue/y_test.csv \
+  -m models/tissue_model \
+  -t independent \
+  -f tissue-tissue \
+  -o results/tissue-tissue
 ```
 Predict the labels of the testing dataset for the blood using the blood model.
 ```
-python predict.py -i data/blood/X_test.csv -l data/blood/y_test.csv -m models/blood_model -t independent -f blood-blood -o results/blood-blood
+python predict.py -i data/blood/X_test.csv \
+  -l data/blood/y_test.csv \
+  -m models/blood_model \
+  -t independent \
+  -f blood-blood \
+  -o results/blood-blood
 ```
 Predict the labels of the testing dataset for the blood using the tissue-blood model.
 ```
-python predict.py -i data/blood/X_test.csv -l data/blood/y_test.csv -m models/tissue-blood_model -t transfer -f tissue-blood -o results/tissue-blood
+python predict.py -i data/blood/X_test.csv \
+  -l data/blood/y_test.csv \
+  -m models/tissue-blood_model \
+  -t transfer -f tissue-blood \
+  -o results/tissue-blood
 ```
 # Feature importances
 The feature importances of the tissue model and the blood model for each cancer type are calculate using the `feature_importances.py` script. Each cancer type is considered as a binary classification problem and the output is saved in `feature_importances` folder.
