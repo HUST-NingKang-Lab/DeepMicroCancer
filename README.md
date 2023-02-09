@@ -6,6 +6,11 @@ To install the required packages, run the following command:
 ```
 pip install -r requirements.txt
 ```
+Unzip the data files in the `data` folder.
+```
+cat data/data.* > data/tmp.zip
+unzip data/tmp.zip -d data
+```
 
 ## Split Dataset 
 The `split_dataset.py` script is used to split the dataset into training and testing sets. The script takes the path to the features and labels files in csv format as input and generates the training and testing datasets.
