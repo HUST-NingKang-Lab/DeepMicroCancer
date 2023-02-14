@@ -46,6 +46,7 @@ python predict.py -i data/blood/X_test.csv \
 ```
 
 # Workflow
+![](/results/workflow.jpg)
 The project is divided into four scripts, each with its own function in the overall workflow.
 ## Requirements
 To install the required packages, run the following command:
