@@ -165,6 +165,9 @@ python predict.py -i data/blood/X_test.csv \
   -t transfer -f tissue-blood \
   -o results/tissue-blood
 ```
+# About the seed
+We use the seed 0 to split the dataset and seed 13 to build the model to make sure that the results are reproducible. The seed can be changed by changing the `seed` variable in the `split_dataset.py` and `build_model.py` scripts.
+
 # Feature importances
 The feature importances of the tissue model and the blood model for each cancer type are calculate using the `feature_importances.py` script. Each cancer type is considered as a binary classification problem and the output is saved in `feature_importances` folder.
 
