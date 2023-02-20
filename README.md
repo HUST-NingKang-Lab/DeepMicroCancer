@@ -20,7 +20,7 @@ python predict.py -i abundance.csv
 |...|...|...|...|
 
 `-l`: Optional. If provided, DeepMicroCancer will calculate the AUROC and plot the ROC curve. This file is a CSV file containing the label of each host. The first column contains the index of each host and the second column named disease_type contains the label of each host, like:
-|SampleID|Env|
+|SampleID|disease_type|
 |---|---|
 |host1|status1|
 |host2|status2|
