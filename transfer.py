@@ -22,13 +22,13 @@ def transfer_model(source_model,
     target_feature_name = target_features.columns.values
     include_feature = set(target_feature_name).intersection(set(X.columns))
     fill0_feature = set(target_feature_name) - set(X.columns)
+    print(f'{target_features.shape[1]} features in total. \
+          {target_features.shape[1] - len(include_feature)} of them are dropped for not in the model. \
+          {len(fill0_feature)} are filled with 0 for not in the data.')
     target_features = pd.concat([target_features.loc[:, include_feature], 
                    pd.DataFrame(np.zeros((target_features.shape[0], len(fill0_feature))), 
                                 index = target_features.index, columns = fill0_feature)], axis = 1)
     target_features = target_features.loc[:, feature_name]
-    print(f'{X.shape[1]} features in total. \
-          {X.shape[1] - len(include_feature)} of them are dropped for not in the model. \
-          {len(target_feature_name) - len(include_feature)} of them are filled with 0 for not in the data.')
     
     target_features = target_features.values
     target_labels = pd.read_csv(target_labels, index_col = 0)
