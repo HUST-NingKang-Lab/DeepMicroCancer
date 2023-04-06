@@ -4,13 +4,6 @@ import argparse
 import TransferRandomForest as trf
 from joblib import load, dump
 
-source_model = 'models/tissue_model'
-source_features = 'data/tissue/X_train.csv'
-source_labels = 'data/tissue/y_train.csv'
-target_features = 'data/blood/X_train.csv'
-target_labels = 'data/blood/y_train.csv'
-output_dir = 'models/tissue-blood_model'
-
 def transfer_model(source_model, 
                    source_features, 
                    source_labels, 
@@ -20,12 +13,23 @@ def transfer_model(source_model,
     
     le = load(f'{source_model}/label_encoder.joblib')
     source_model = load(f'{source_model}/model.joblib')
+    source_feature_name = pd.read_csv(f'{source_model}/features.txt', quotechar = "'", header = None).iloc[:, 0].values
     source_features = pd.read_csv(source_features, index_col = 0).values
     source_labels = pd.read_csv(source_labels, index_col = 0)
     source_labels = source_labels.apply(le.fit_transform).values.ravel()   # Convert labels to integers
     
     target_features = pd.read_csv(target_features, index_col = 0)
-    feature_name = target_features.columns.values
+    target_feature_name = target_features.columns.values
+    include_feature = set(target_feature_name).intersection(set(X.columns))
+    fill0_feature = set(target_feature_name) - set(X.columns)
+    target_features = pd.concat([target_features.loc[:, include_feature], 
+                   pd.DataFrame(np.zeros((target_features.shape[0], len(fill0_feature))), 
+                                index = target_features.index, columns = fill0_feature)], axis = 1)
+    target_features = target_features.loc[:, feature_name]
+    print(f'{X.shape[1]} features in total. \
+          {X.shape[1] - len(include_feature)} of them are dropped for not in the model. \
+          {len(target_feature_name) - len(include_feature)} of them are filled with 0 for not in the data.')
+    
     target_features = target_features.values
     target_labels = pd.read_csv(target_labels, index_col = 0)
     target_labels = target_labels.apply(le.fit_transform).values.ravel()   # Convert labels to integers

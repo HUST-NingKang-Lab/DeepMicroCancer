@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import warnings
 import os
 import argparse
 from sklearn.metrics import roc_curve, auc, roc_auc_score
@@ -7,6 +8,8 @@ import TransferRandomForest as trf
 import matplotlib.pyplot as plt
 from joblib import load
 from itertools import cycle
+
+warnings.filterwarnings("ignore")
 
 def roc_auc_calculate(y_query, y_proba):
     classes = np.unique(y_query)
@@ -66,11 +69,11 @@ def roc_curve_plot(roc_auc, fpr, tpr, filename, output):
     plt.savefig(filepath,bbox_inches = 'tight')
     plt.show()
     
-features = 'data/blood/X_test.csv'
+features = 'X_test.csv'
 model = 'models/blood_model'
-labels = 'data/blood/y_test.csv'
+labels = 'y_test.csv'
 fig_name = 'tissue-blood'
-output = 'results/tissue-blood'
+output = 'tissue-blood'
 
 def independent_predict(features, labels, model, fig_name, output):
     X = pd.read_csv(features, index_col = 0)
@@ -79,7 +82,15 @@ def independent_predict(features, labels, model, fig_name, output):
     
     # match the features
     feature_name = pd.read_csv(f'{model}/features.txt', quotechar = "'", header = None).iloc[:, 0].values
+    include_feature = set(feature_name).intersection(set(X.columns))
+    fill0_feature = set(feature_name) - set(X.columns)
+    X = pd.concat([X.loc[:, include_feature], 
+                   pd.DataFrame(np.zeros((X.shape[0], len(fill0_feature))), 
+                                index = X.index, columns = fill0_feature)], axis = 1)
     X = X.loc[:, feature_name]
+    print(f'{X.shape[1]} features in total. \
+          {X.shape[1] - len(include_feature)} of them are dropped for not in the model. \
+          {len(feature_name) - len(include_feature)} of them are filled with 0 for not in the data.')
     
     # predict
     y_pre = clf.predict(X)
@@ -106,7 +117,15 @@ def transfer_predict(features, labels, model, fig_name, output):
     
     # match the features
     feature_name = pd.read_csv(f'{model}/features.txt', quotechar = "'", header = None).iloc[:, 0].values
+    include_feature = set(feature_name).intersection(set(X.columns))
+    fill0_feature = set(feature_name) - set(X.columns)
+    X = pd.concat([X.loc[:, include_feature], 
+                   pd.DataFrame(np.zeros((X.shape[0], len(fill0_feature))), 
+                                index = X.index, columns = fill0_feature)], axis = 1)
     X = X.loc[:, feature_name]
+    print(f'{X.shape[1]} features in total. \
+          {X.shape[1] - len(include_feature)} of them are dropped for not in the model. \
+          {len(feature_name) - len(include_feature)} of them are filled with 0 for not in the data.')
     
     # predict
     y_pre = trf.mix_predict(ser_RF, strut_RF, X.values)
