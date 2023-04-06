@@ -20,7 +20,7 @@ python predict.py -i abundance.csv
 |...|...|...|...|
 
 `-l`: Optional. If provided, DeepMicroCancer will calculate the AUROC and plot the ROC curve. This file is a CSV file containing the label of each host. The first column contains the index of each host and the second column named disease_type contains the label of each host, like:
-|SampleID|Env|
+|SampleID|disease_type|
 |---|---|
 |host1|status1|
 |host2|status2|
@@ -104,8 +104,11 @@ python build_model.py -x data/blood/X_train.csv \
   -y data/blood/y_train.csv \
   -o models/blood_model
 ```
+### About the seed
+We use the seed 0 to split the dataset and seed 13 to build the model to make sure that the results are reproducible. The seed can be changed by changing the `seed` variable in the `split_dataset.py` and `build_model.py` scripts.
 ## Transfer Model
 The `transfer.py` script is used to transfer the model from one dataset to another. The script takes the path to the source model, source features and labels files, target features and labels files in csv format as input and outputs a saved model. The source model should be built using the `build_model.py` script.
+
 ### Arguments
 ```
 -s, --source_model: The path to the source model
